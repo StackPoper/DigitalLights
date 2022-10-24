@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Digital</string>
+    <string name="job_status_waiting">Waiting</string>
+    <string name="job_status_in_progress">In progress</string>
+    <string name="job_status_done">Done</string>
+    <string name="printer_status_online">Online</string>
+    <string name="printer_status_offline">Offline</string>
+</resources>

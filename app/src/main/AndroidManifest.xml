@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Digital"
         tools:targetApi="31">
+        <service
+            android:name=".service.SpoolerService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -15,7 +15,7 @@ import com.task.digital.databinding.FragmentMainBinding
 
 class MainFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
-    private val viewModel: MainViewModel by viewModels()
+    val viewModel: MainViewModel by viewModels()
 
     companion object {
         fun newInstance() = MainFragment()

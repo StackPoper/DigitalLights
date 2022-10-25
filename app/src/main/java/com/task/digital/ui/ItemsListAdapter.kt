@@ -29,13 +29,16 @@ class ItemsListAdapter:
      */
     companion object DiffCallback : DiffUtil.ItemCallback<ItemInfo>() {
         override fun areItemsTheSame(oldItem: ItemInfo, newItem: ItemInfo): Boolean {
-            return areContentsTheSame(oldItem, newItem)
+            return oldItem.name == newItem.name &&
+                    oldItem.type == newItem.type &&
+                    oldItem.sizeBytes == newItem.sizeBytes
         }
 
         override fun areContentsTheSame(oldItem: ItemInfo, newItem: ItemInfo): Boolean {
             return oldItem.name == newItem.name &&
                     oldItem.type == newItem.type &&
-                    oldItem.size == newItem.size
+                    oldItem.sizeBytes == newItem.sizeBytes &&
+                    oldItem.status == newItem.status
         }
     }
 

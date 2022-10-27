@@ -6,26 +6,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.task.digital.data.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _items = MutableLiveData<Queue<ItemInfo>>()
     val items: LiveData<Queue<ItemInfo>> = _items
 
+    val printers = ArrayList<PrinterInfo>()
+    var currentPrinterChoice = 0
+
     init {
-        val context = application.applicationContext
-        Controller.printers.add(PrinterInfo(context, "Samsung", "MFP550", PrinterConnectivityStatus.ONLINE))
-        Controller.printers.add(PrinterInfo(context, "HP", "LaserJet", PrinterConnectivityStatus.OFFLINE))
-        Controller.printers.add(PrinterInfo(context, "Canon", "E510", PrinterConnectivityStatus.ONLINE))
-
-        Controller.addFileToCurrentQueue("work", "pdf", 500)
-        Controller.addFileToCurrentQueue("home", "txt", 100)
-        Controller.addFileToCurrentQueue("crazy", "png", 1500)
-
-        setItems(0)
+        setItems()
     }
 
-    fun setItems(printerPosition: Int) {
-        Controller.current = printerPosition
-        _items.value = Controller.getCurrentFileQueue()
+    fun setItems() {
+        if (printers.size > 0)
+            _items.value = getCurrentPrinter().fileQueue
     }
+
+    fun addPrinter(printer: PrinterInfo) {
+        var alreadyAdded = false
+        for (p in printers)
+            if (p == printer)
+                alreadyAdded = true
+        if (!alreadyAdded)
+            printers.add(printer)
+    }
+
+    fun addFileToCurrentPrinterQueue(name: String, type: String, sizeBytes: Long) {
+        getCurrentPrinter().fileQueue.add(ItemInfo(name, type, status = JobStatus.WAITING, sizeBytes))
+    }
+
+    fun getCurrentPrinter() =
+        printers[currentPrinterChoice]
 }

@@ -4,7 +4,7 @@ import android.content.Context
 import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class PrinterInfo (
+data class PrinterInfo (
     private val context: Context?,
     private val name: String,
     private val model: String,
@@ -15,4 +15,12 @@ class PrinterInfo (
     override fun toString(): String {
         return "$name $model ${context?.resources?.getString(connectivity.get())}"
     }
+
+    override fun equals(other: Any?) =
+        other is PrinterInfo &&
+                name == other.name &&
+                model == other.model
+
+    fun isOnline() =
+        connectivity == PrinterConnectivityStatus.ONLINE
 }

@@ -1,5 +1,6 @@
 package com.task.digital.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -29,9 +30,7 @@ class ItemsListAdapter:
      */
     companion object DiffCallback : DiffUtil.ItemCallback<ItemInfo>() {
         override fun areItemsTheSame(oldItem: ItemInfo, newItem: ItemInfo): Boolean {
-            return oldItem.name == newItem.name &&
-                    oldItem.type == newItem.type &&
-                    oldItem.sizeBytes == newItem.sizeBytes
+            return false
         }
 
         override fun areContentsTheSame(oldItem: ItemInfo, newItem: ItemInfo): Boolean {
@@ -47,7 +46,7 @@ class ItemsListAdapter:
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowViewHolder {
         return ShowViewHolder(
-            ItemInfoBinding.inflate(LayoutInflater.from(parent.context))
+            ItemInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -55,7 +54,8 @@ class ItemsListAdapter:
      * Replaces the contents of a view (invoked by the layout manager)
      */
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
-        val show = getItem(position)
-        holder.bind(show)
+        val item = getItem(position)
+        Log.d("BindingAdapters", "onBindViewHolder:$item")
+        holder.bind(item)
     }
 }

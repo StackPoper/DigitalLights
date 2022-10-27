@@ -5,4 +5,5 @@
     <string name="job_status_done">Done</string>
     <string name="printer_status_online">Online</string>
     <string name="printer_status_offline">Offline</string>
+    <string name="add_file">Add File</string>
 </resources>

@@ -1,11 +1,9 @@
 package com.task.digital.data
 
-import android.content.Context
-import java.util.Queue
+import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 data class PrinterInfo (
-    private val context: Context?,
     private val name: String,
     private val model: String,
     private val connectivity: PrinterConnectivityStatus,
@@ -14,7 +12,7 @@ data class PrinterInfo (
 )
 {
     override fun toString(): String {
-        return "$name $model ${context?.resources?.getString(connectivity.get())}"
+        return "$name $model ${connectivity.get()}"
     }
 
     override fun equals(other: Any?) =
@@ -23,8 +21,7 @@ data class PrinterInfo (
                 model == other.model
 
     override fun hashCode(): Int {
-        var result = context?.hashCode() ?: 0
-        result = 31 * result + name.hashCode()
+        var result = name.hashCode()
         result = 31 * result + model.hashCode()
         result = 31 * result + connectivity.hashCode()
         result = 31 * result + fileQueue.hashCode()

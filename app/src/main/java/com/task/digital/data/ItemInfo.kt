@@ -9,4 +9,17 @@ data class ItemInfo (
     override fun toString(): String {
         return "$name $type ${status.get()}"
     }
+
+    override fun equals(other: Any?) =
+        other is ItemInfo &&
+                name == other.name &&
+                type == other.type &&
+                sizeBytes == other.sizeBytes
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + sizeBytes.hashCode()
+        return result
+    }
 }

@@ -12,6 +12,7 @@ import com.task.digital.data.JobStatus
 import com.task.digital.data.PrinterConnectivityStatus
 import com.task.digital.data.PrinterInfo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class SpoolerService : Service() {
@@ -23,9 +24,9 @@ class SpoolerService : Service() {
     }
 
     suspend fun initPrintersList(callback: IOnPrintersInitCallback) {
-        viewModel.addPrinter(PrinterInfo(applicationContext, "Samsung", "MFP550", PrinterConnectivityStatus.ONLINE))
-        viewModel.addPrinter(PrinterInfo(applicationContext, "HP", "LaserJet", PrinterConnectivityStatus.OFFLINE))
-        viewModel.addPrinter(PrinterInfo(applicationContext, "Canon", "E510", PrinterConnectivityStatus.ONLINE))
+        viewModel.addPrinter(PrinterInfo("Samsung", "MFP550", PrinterConnectivityStatus.ONLINE))
+        viewModel.addPrinter(PrinterInfo("HP", "LaserJet", PrinterConnectivityStatus.OFFLINE))
+        viewModel.addPrinter(PrinterInfo("Canon", "E510", PrinterConnectivityStatus.ONLINE))
         withContext(Dispatchers.Main) {
             callback.populateSpinner()
         }
@@ -44,7 +45,7 @@ class SpoolerService : Service() {
             val item = printer.fileQueue.element()
             when (item.status) {
                 JobStatus.DONE -> {
-                    Thread.sleep(5000)
+                    delay(5000)
                     printer.fileQueue.poll()
                 }
                 JobStatus.IN_PROGRESS -> {
@@ -67,9 +68,9 @@ class SpoolerService : Service() {
         }
     }
 
-    private fun waitForPrintToFinish(size: Long) {
+    private suspend fun waitForPrintToFinish(size: Long) {
         val timeToPrint = PREDEFINED_TIME_TO_PRINT + size.div(100)
-        Thread.sleep(timeToPrint)
+        delay(timeToPrint)
     }
 
     companion object {

@@ -1,14 +1,14 @@
 package com.task.digital
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.task.digital.data.*
+import androidx.lifecycle.ViewModel
+import com.task.digital.data.ItemInfo
+import com.task.digital.data.JobStatus
+import com.task.digital.data.PrinterInfo
 import java.util.*
-import kotlin.collections.ArrayList
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel : ViewModel() {
     private val _items = MutableLiveData<Queue<ItemInfo>>()
     val items: LiveData<Queue<ItemInfo>> = _items
 

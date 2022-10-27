@@ -23,12 +23,12 @@ class SpoolerService : Service() {
         return binder
     }
 
-    suspend fun initPrintersList(callback: IOnPrintersInitCallback) {
+    suspend fun initPrintersList(callback: IServiceCallback) {
         viewModel.addPrinter(PrinterInfo("Samsung", "MFP550", PrinterConnectivityStatus.ONLINE))
         viewModel.addPrinter(PrinterInfo("HP", "LaserJet", PrinterConnectivityStatus.OFFLINE))
         viewModel.addPrinter(PrinterInfo("Canon", "E510", PrinterConnectivityStatus.ONLINE))
         withContext(Dispatchers.Main) {
-            callback.populateSpinner()
+            callback.updateUI()
         }
     }
 

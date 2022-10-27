@@ -22,12 +22,12 @@ import com.task.digital.FileLoader
 import com.task.digital.MainViewModel
 import com.task.digital.R
 import com.task.digital.databinding.FragmentMainBinding
-import com.task.digital.service.IOnPrintersInitCallback
+import com.task.digital.service.IServiceCallback
 import com.task.digital.service.SpoolerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener, IOnPrintersInitCallback {
+class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener, IServiceCallback {
 
     val viewModel: MainViewModel by viewModels()
     var service: SpoolerService? = null
@@ -110,7 +110,7 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
         }
     }
 
-    override fun populateSpinner() {
+    override fun updateUI() {
         spinner.adapter = ArrayAdapter(
             requireActivity(),
             android.R.layout.simple_spinner_item,

@@ -35,6 +35,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addFileToCurrentPrinterQueue(name: String, type: String, sizeBytes: Long) {
         getCurrentPrinter().fileQueue.add(ItemInfo(name, type, status = JobStatus.WAITING, sizeBytes))
+        setItems()
     }
 
     fun getCurrentPrinter() =

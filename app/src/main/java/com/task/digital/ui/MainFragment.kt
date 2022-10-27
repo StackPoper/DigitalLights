@@ -78,8 +78,6 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
                 service = binder.getService(viewModel)
                 lifecycleScope.launch(Dispatchers.Default) {
                     service?.initPrintersList(this@MainFragment)
-                    for (p in viewModel.printers)
-                        service!!.work(p)
                 }
             }
             override fun onServiceDisconnected(arg0: ComponentName) {}
@@ -93,7 +91,12 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         viewModel.currentPrinterChoice = position
         viewModel.setItems()
-        addBtn.isEnabled = viewModel.getCurrentPrinter().isOnline()
+        val currentPrinter = viewModel.getCurrentPrinter()
+        addBtn.isEnabled = currentPrinter.isOnline()
+        if (currentPrinter.isOnline() && !currentPrinter.workStarted)
+            lifecycleScope.launch(Dispatchers.Default) {
+                service!!.work(viewModel.getCurrentPrinter())
+            }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -104,7 +107,6 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
     override fun onClick(v: View?) {
         activity?.let {
             FileLoader.openFile(it)
-            viewModel.setItems()
         }
     }
 

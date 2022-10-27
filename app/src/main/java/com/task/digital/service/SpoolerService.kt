@@ -1,11 +1,13 @@
 package com.task.digital.service
 
+import android.app.Activity
 import android.app.Service
 import android.content.Intent
+import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
+import com.task.digital.FileLoader
 import com.task.digital.MainViewModel
-import com.task.digital.data.ItemInfo
 import com.task.digital.data.JobStatus
 import com.task.digital.data.PrinterConnectivityStatus
 import com.task.digital.data.PrinterInfo
@@ -29,8 +31,16 @@ class SpoolerService : Service() {
         }
     }
 
+    fun addFile(activity: Activity, uri: Uri) {
+        FileLoader.resolveFileDetails(viewModel, activity, uri)
+    }
+
     suspend fun work(printer: PrinterInfo) {
-        while (printer.isOnline() && printer.fileQueue.size > 0) {
+        while (true) {
+            if (printer.fileQueue.size == 0)
+                continue
+
+            printer.workStarted = true
             val item = printer.fileQueue.element()
             when (item.status) {
                 JobStatus.DONE -> {

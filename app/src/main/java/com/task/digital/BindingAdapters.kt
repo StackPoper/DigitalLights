@@ -20,6 +20,9 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: Queue<ItemInfo>?) {
     adapter.submitList(data?.toList())
 }
 
+/**
+ * Changes the visibility of the [ProgressBar] according to the [JobStatus] of [ItemInfo].
+ */
 @BindingAdapter("showProgress")
 fun bindProgressToStatus(progress: ProgressBar, status: JobStatus) {
     if (status == JobStatus.IN_PROGRESS)

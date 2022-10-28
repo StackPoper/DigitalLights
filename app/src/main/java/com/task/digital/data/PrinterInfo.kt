@@ -3,6 +3,9 @@ package com.task.digital.data
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
+/**
+ * Holds data about the printer that will execute the job and the item that will be queued for printing.
+ */
 data class PrinterInfo (
     private val name: String,
     private val model: String,

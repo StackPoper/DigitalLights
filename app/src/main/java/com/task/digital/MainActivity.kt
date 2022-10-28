@@ -17,6 +17,9 @@ class MainActivity : AppCompatActivity() {
                 .commitNow()
     }
 
+    /**
+     * Get the result file data from the system picker.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
         if (requestCode == FileLoader.PICK_PDF_FILE && resultCode == RESULT_OK)

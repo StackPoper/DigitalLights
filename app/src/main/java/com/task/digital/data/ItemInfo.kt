@@ -1,5 +1,8 @@
 package com.task.digital.data
 
+/**
+ * Holds data about the item that will be queued for printing.
+ */
 data class ItemInfo (
     val name: String,
     val type: String,

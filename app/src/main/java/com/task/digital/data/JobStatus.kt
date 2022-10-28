@@ -2,6 +2,9 @@ package com.task.digital.data
 
 import com.task.digital.R
 
+/**
+ * Status of the current [ItemInfo] job.
+ */
 enum class JobStatus {
     WAITING,
     IN_PROGRESS,

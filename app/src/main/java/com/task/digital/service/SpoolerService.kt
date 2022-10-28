@@ -11,10 +11,18 @@ import com.task.digital.MainViewModel
 import com.task.digital.data.JobStatus
 import com.task.digital.data.PrinterConnectivityStatus
 import com.task.digital.data.PrinterInfo
+import com.task.digital.data.ItemInfo
+import com.task.digital.MainActivity
+import com.task.digital.ui.MainFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import java.util.concurrent.ConcurrentLinkedQueue
 
+/**
+ * A service bound to [MainActivity] through [MainFragment]
+ * that initializes the [PrinterInfo] list and manages the [ItemInfo] job [ConcurrentLinkedQueue].
+ */
 class SpoolerService : Service() {
     private val binder = ServiceBinder()
     private lateinit var viewModel: MainViewModel
@@ -23,6 +31,10 @@ class SpoolerService : Service() {
         return binder
     }
 
+    /**
+     * Initializes the [PrinterInfo] list asynchronously. In a real situation printers
+     * will be obtained from a network.
+     */
     suspend fun initPrintersList(callback: IServiceCallback) {
         viewModel.addPrinter(PrinterInfo("Samsung", "MFP550", PrinterConnectivityStatus.ONLINE))
         viewModel.addPrinter(PrinterInfo("HP", "LaserJet", PrinterConnectivityStatus.OFFLINE))
@@ -32,10 +44,18 @@ class SpoolerService : Service() {
         }
     }
 
+    /**
+     * Adds a new pdf or image [ItemInfo] to the corresponding [PrinterInfo] job [ConcurrentLinkedQueue].
+     */
     fun addFile(activity: Activity, uri: Uri) {
-        FileLoader.resolveFileDetails(viewModel, activity, uri)
+        FileLoader.resolveFileDetails(activity, uri)?.let {
+            viewModel.addFileToCurrentPrinterQueue(it)
+        }
     }
 
+    /**
+     * Manages the job [ConcurrentLinkedQueue] asynchronously.
+     */
     suspend fun work(printer: PrinterInfo) {
         while (true) {
             if (printer.fileQueue.size == 0)
@@ -61,6 +81,9 @@ class SpoolerService : Service() {
         }
     }
 
+    /**
+     * Gets a reference to the [MainViewModel] and returns a reference to this [SpoolerService].
+     */
     inner class ServiceBinder : Binder() {
         fun getService(vm: MainViewModel): SpoolerService {
             viewModel = vm
@@ -68,8 +91,11 @@ class SpoolerService : Service() {
         }
     }
 
-    private suspend fun waitForPrintToFinish(size: Long) {
-        val timeToPrint = PREDEFINED_TIME_TO_PRINT + size.div(100)
+    /**
+     * Simulate printer working on a current job.
+     */
+    private suspend fun waitForPrintToFinish(sizeBytes: Long) {
+        val timeToPrint = PREDEFINED_TIME_TO_PRINT + sizeBytes.div(100)
         delay(timeToPrint)
     }
 

@@ -21,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import com.task.digital.FileLoader
 import com.task.digital.MainViewModel
 import com.task.digital.R
+import com.task.digital.data.PrinterInfo
 import com.task.digital.databinding.FragmentMainBinding
 import com.task.digital.service.IServiceCallback
 import com.task.digital.service.SpoolerService
@@ -61,17 +62,21 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
         (binding as FragmentMainBinding).items.adapter = ItemsListAdapter()
 
         addBtn = binding.root.findViewById(R.id.add_file_btn)
+        addBtn.isEnabled = false
         addBtn.setOnClickListener(this)
 
         return binding.root
     }
 
+    /**
+     * Binds to the [SpoolerService] after the layout is created in order to be able to fill the [Spinner].
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         spinner = binding.root.findViewById(R.id.printers_spinner)
         spinner.onItemSelectedListener = this
-        // Bind to LocalService
+        // Bind to SpoolerService
         connection = object : ServiceConnection {
             override fun onServiceConnected(className: ComponentName, srvs: IBinder) {
                 val binder = srvs as SpoolerService.ServiceBinder
@@ -88,11 +93,13 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
         }
     }
 
+    /**
+     * Invoked when a [Spinner] item is selected. Called also on first initialization.
+     */
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         viewModel.currentPrinterChoice = position
         viewModel.setItems()
         val currentPrinter = viewModel.getCurrentPrinter()
-        addBtn.isEnabled = currentPrinter.isOnline()
         if (currentPrinter.isOnline() && !currentPrinter.workStarted)
             lifecycleScope.launch(Dispatchers.Default) {
                 service!!.work(viewModel.getCurrentPrinter())
@@ -104,12 +111,18 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
             .show()
     }
 
+    /**
+     * Invoked when Add file [AppCompatButton] is clicked.
+     */
     override fun onClick(v: View?) {
         activity?.let {
             FileLoader.openFile(it)
         }
     }
 
+    /**
+     * Fill the [Spinner] with [PrinterInfo] list after it is initialized asynchronously.
+     */
     override fun updateUI() {
         spinner.adapter = ArrayAdapter(
             requireActivity(),
@@ -118,5 +131,8 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClic
         ).apply {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
+
+        // Enable Add file button after the service object is obtained and the current printer is online
+        addBtn.isEnabled = viewModel.getCurrentPrinter().isOnline()
     }
 }
